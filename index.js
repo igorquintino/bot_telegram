@@ -9,13 +9,13 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const mensagensAgendadas = [
     {
         chatId: process.env.CHAT_ID_LIVRO,
-        horario: "15 18 * * 1", // Segunda-feira às 18:15
+        horario: "36 12 * * *", // Segunda-feira às 18:15
         mensagem: `📚 **Nada Pode Me Ferir** - David Goggins\n\n🔥 Um livro sobre superar desafios e dominar sua mente.\n\n👉 [Compre aqui](https://amzn.to/3EJjw0B)`,
         imagem: "AgACAgQAAxkBAAICJ2..." // Substitua pelo File ID da imagem
     },
     {
         chatId: process.env.CHAT_ID_LIVRO,
-        horario: "15 18 * * 2", // Terça-feira às 18:15
+        horario: "38 12 * * *", // Terça-feira às 18:15
         mensagem: `💰 **O Homem Mais Rico da Babilônia** - George S. Clason\n\n📖 Lições atemporais sobre dinheiro, que também servem para investir em sua carreira de programador.\n\n👉 [Compre aqui](https://amzn.to/3WYYy4p)`,
         imagem: "AgACAgQAAxkBAAICJ3..." // Outro File ID
     }
