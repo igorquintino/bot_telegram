@@ -4,7 +4,7 @@ const cron = require("node-cron");
 const TelegramBot = require("node-telegram-bot-api");
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
-const mensagens = JSON.parse(fs.readFileSync("mensagens_por_horario.json", "utf8"));
+const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
 
 // Função para enviar mensagem aleatória de um horário
 function enviarMensagemAleatoria(horario) {
