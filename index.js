@@ -4,21 +4,11 @@ const cron = require("node-cron");
 const TelegramBot = require("node-telegram-bot-api");
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
-
-// Carrega e agrupa as mensagens por horário
-const mensagensLista = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
-const mensagensPorHorario = {};
-
-mensagensLista.forEach((msg) => {
-  if (!mensagensPorHorario[msg.horario]) {
-    mensagensPorHorario[msg.horario] = [];
-  }
-  mensagensPorHorario[msg.horario].push(msg);
-});
+const mensagens = JSON.parse(fs.readFileSync("mensagens_por_horario.json", "utf8"));
 
 // Função para enviar mensagem aleatória de um horário
 function enviarMensagemAleatoria(horario) {
-  const opcoes = mensagensPorHorario[horario];
+  const opcoes = mensagens[horario];
   if (!opcoes || opcoes.length === 0) return;
 
   const aleatoria = opcoes[Math.floor(Math.random() * opcoes.length)];
@@ -39,16 +29,14 @@ function enviarMensagemAleatoria(horario) {
   }
 }
 
-// Agenda dinamicamente todos os horários do JSON
-Object.keys(mensagensPorHorario).forEach(horario => {
-  const [hora, minuto] = horario.split(":").map(Number);
-  const cronExpr = `${minuto} ${hora} * * *`;
+// Lista de horários a serem agendados
+const horarios = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "17:00", "18:00", "20:00"];
 
-  cron.schedule(cronExpr, () => enviarMensagemAleatoria(horario), {
-    timezone: "America/Sao_Paulo"
+horarios.forEach(horario => {
+  const [hora, minuto] = horario.split(":");
+  cron.schedule(`${minuto} ${hora} * * *`, () => enviarMensagemAleatoria(horario), {
+    timezone: "America/Sao_Paulo",
   });
-
-  console.log(`⏰ Agendado para ${horario}`);
 });
 
-console.log("✅ Bot rodando com JSON em lista!");
+console.log("✅ Bot rodando e pronto para enviar mensagens programadas!");
