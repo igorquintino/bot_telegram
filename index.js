@@ -30,8 +30,9 @@ function enviarMensagemAleatoria(horario) {
 }
 
 // Lista de horários a serem agendados
-const horarios = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "17:00", "18:00", "20:00"];
-
+const horarios = [
+  "10:50", "10:55", "11:00", "11:05", "11:10", "11:15", "11:20", "11:25", "11:30", "11:35"
+];
 horarios.forEach(horario => {
   const [hora, minuto] = horario.split(":");
   cron.schedule(`${minuto} ${hora} * * *`, () => enviarMensagemAleatoria(horario), {
