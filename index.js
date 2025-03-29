@@ -31,7 +31,7 @@ function enviarMensagemAleatoria(horario) {
 
 // Lista de horários a serem agendados
 const horarios = [
-  "10:50", "10:55", "11:00", "11:05", "11:10", "11:15", "11:20", "11:25", "11:30", "11:35"
+  "10:50", "10:55", "11:00", "11:05", "11:09", "11:10", "11:11", "11:12", "11:13", "11:14", "11:15", "11:16", "11:17", "11:18", "11:19", "11,20
 ];
 horarios.forEach(horario => {
   const [hora, minuto] = horario.split(":");
