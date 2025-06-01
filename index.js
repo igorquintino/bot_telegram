@@ -3,8 +3,25 @@ const fs = require("fs");
 const cron = require("node-cron");
 const TelegramBot = require("node-telegram-bot-api");
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
+
+// Comando para testar file_id manualmente no Telegram
+bot.onText(/\/testar (.+)/, (msg, match) => {
+  const fileId = match[1];
+  bot.sendPhoto(msg.chat.id, fileId, {
+    caption: "Teste de envio com file_id",
+    parse_mode: "HTML"
+  })
+  .then(() => {
+    bot.sendMessage(msg.chat.id, "✅ file_id FUNCIONA!");
+  })
+  .catch(err => {
+    const codigo = err?.response?.body?.error_code || "desconhecido";
+    const descricao = err?.response?.body?.description || "sem descrição";
+    bot.sendMessage(msg.chat.id, `❌ Erro\nCódigo: ${codigo}\nDescrição: ${descricao}`);
+  });
+});
 
 // Função para enviar mensagem aleatória de um horário
 function enviarMensagemAleatoria(horario) {
@@ -19,13 +36,21 @@ function enviarMensagemAleatoria(horario) {
       parse_mode: "HTML",
     })
     .then(() => console.log(`✅ Enviado com imagem: ${horario}`))
-    .catch(err => console.error("❌ Erro (imagem):", err.description));
+    .catch(err => {
+      console.error("❌ Erro ao enviar imagem:");
+      console.error("Código:", err?.response?.body?.error_code);
+      console.error("Descrição:", err?.response?.body?.description);
+    });
   } else {
     bot.sendMessage(process.env.CHAT_ID_LIVRO, aleatoria.mensagem, {
       parse_mode: "HTML",
     })
     .then(() => console.log(`✅ Enviado sem imagem: ${horario}`))
-    .catch(err => console.error("❌ Erro (mensagem):", err.description));
+    .catch(err => {
+      console.error("❌ Erro ao enviar mensagem:");
+      console.error("Código:", err?.response?.body?.error_code);
+      console.error("Descrição:", err?.response?.body?.description);
+    });
   }
 }
 
