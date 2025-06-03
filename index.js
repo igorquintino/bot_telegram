@@ -4,7 +4,7 @@ const cron = require("node-cron");
 const TelegramBot = require("node-telegram-bot-api");
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
-const mensagens = JSON.parse(fs.readFileSync("mensagens_prontas_para_bot.json", "utf8"));
+const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
 
 console.log("🚀 Bot iniciado...");
 console.log("✅ Chat ID:", process.env.CHAT_ID_LIVRO || "⚠️ NÃO DEFINIDO");
