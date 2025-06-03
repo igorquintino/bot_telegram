@@ -6,6 +6,11 @@ const TelegramBot = require("node-telegram-bot-api");
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
 
+// Verificação de carregamento de variáveis de ambiente
+console.log("🚀 Bot iniciado...");
+console.log("✅ Chat ID:", process.env.CHAT_ID_LIVRO || "❌ NÃO DEFINIDO");
+console.log("⏰ Horário atual:", new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
+
 // Comando para testar file_id manualmente
 bot.onText(/\/testar (.+)/, (msg, match) => {
   const fileId = match[1];
@@ -25,8 +30,13 @@ bot.onText(/\/testar (.+)/, (msg, match) => {
 
 // Função para enviar mensagem aleatória com imagem local ou file_id
 function enviarMensagemAleatoria(horario) {
+  console.log(`⏰ Executando envio para horário: ${horario}`);
+
   const opcoes = mensagens[horario];
-  if (!opcoes || opcoes.length === 0) return;
+  if (!opcoes || opcoes.length === 0) {
+    console.warn(`⚠️ Nenhuma mensagem disponível para o horário ${horario}`);
+    return;
+  }
 
   const aleatoria = opcoes[Math.floor(Math.random() * opcoes.length)];
 
@@ -43,16 +53,22 @@ function enviarMensagemAleatoria(horario) {
     });
 
   } else if (aleatoria.caminho) {
-    bot.sendPhoto(process.env.CHAT_ID_LIVRO, fs.readFileSync(aleatoria.caminho), {
-      caption: aleatoria.mensagem,
-      parse_mode: "HTML"
-    })
-    .then(() => console.log(`✅ Enviado com imagem local: ${horario}`))
-    .catch(err => {
-      console.error("❌ Erro ao enviar imagem local:");
-      console.error("Código:", err?.response?.body?.error_code);
-      console.error("Descrição:", err?.response?.body?.description);
-    });
+    try {
+      const buffer = fs.readFileSync(aleatoria.caminho);
+      bot.sendPhoto(process.env.CHAT_ID_LIVRO, buffer, {
+        caption: aleatoria.mensagem,
+        parse_mode: "HTML"
+      })
+      .then(() => console.log(`✅ Enviado com imagem local: ${horario}`))
+      .catch(err => {
+        console.error("❌ Erro ao enviar imagem local:");
+        console.error("Código:", err?.response?.body?.error_code);
+        console.error("Descrição:", err?.response?.body?.description);
+      });
+    } catch (readErr) {
+      console.error("❌ Erro ao ler o arquivo de imagem local:", aleatoria.caminho);
+      console.error(readErr.message);
+    }
 
   } else {
     bot.sendMessage(process.env.CHAT_ID_LIVRO, aleatoria.mensagem, {
@@ -67,7 +83,7 @@ function enviarMensagemAleatoria(horario) {
   }
 }
 
-// Lista de horários personalizados (5 em 5 minutos a partir das 21:15)
+// Lista de horários usados no JSON
 const horarios = [
   "12:00", "12:05", "12:10", "12:15", "12:20", "12:25", "12:30", "12:35", "12:40", "12:45",
   "12:50", "12:55", "13:00", "13:05", "13:10", "13:15", "13:20", "13:25", "13:30", "13:35",
@@ -76,6 +92,7 @@ const horarios = [
   "15:20", "15:25"
 ];
 
+// Agendar cada horário
 horarios.forEach(horario => {
   const [hora, minuto] = horario.split(":");
   cron.schedule(`${minuto} ${hora} * * *`, () => enviarMensagemAleatoria(horario), {
