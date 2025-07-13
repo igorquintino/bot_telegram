@@ -12,24 +12,24 @@ console.log("⏰ Horário atual:", new Date().toLocaleString("pt-BR", { timeZone
 
 function enviarMensagemAleatoria(horario) {
   console.log(`⏰ Executando envio para horário: ${horario}`);
-  const opcoes = mensagens[horario];
+  const lista = mensagens.produtos;
 
-  if (!opcoes || opcoes.length === 0) {
-    console.warn(`⚠️ Nenhuma mensagem disponível para o horário ${horario}`);
+  if (!lista || lista.length === 0) {
+    console.warn("⚠️ Nenhum produto disponível na lista geral.");
     return;
   }
 
-  const aleatoria = opcoes[Math.floor(Math.random() * opcoes.length)];
+  const produto = lista[Math.floor(Math.random() * lista.length)];
 
-  if (!aleatoria.mensagem || aleatoria.mensagem.trim() === "") {
-    console.warn(`⚠️ Mensagem vazia no horário ${horario}.`);
+  if (!produto.mensagem || produto.mensagem.trim() === "") {
+    console.warn("⚠️ Produto com mensagem vazia.");
     return;
   }
 
   try {
-    const buffer = fs.readFileSync(aleatoria.caminho);
+    const buffer = fs.readFileSync(produto.caminho);
     bot.sendPhoto(process.env.CHAT_ID_LIVRO, buffer, {
-      caption: aleatoria.mensagem,
+      caption: produto.mensagem,
       parse_mode: "HTML"
     })
     .then(() => console.log(`✅ Enviado com imagem: ${horario}`))
@@ -39,15 +39,14 @@ function enviarMensagemAleatoria(horario) {
       console.error("Descrição:", err?.response?.body?.description);
     });
   } catch (err) {
-    console.error("❌ Erro ao ler imagem local:", aleatoria.caminho);
-    bot.sendMessage(process.env.CHAT_ID_LIVRO, aleatoria.mensagem, { parse_mode: "HTML" });
+    console.error("❌ Erro ao ler imagem local:", produto.caminho);
+    bot.sendMessage(process.env.CHAT_ID_LIVRO, produto.mensagem, { parse_mode: "HTML" });
   }
 }
 
-
 const horarios = [
-  "20:00", "20:05", "20:10", "20:15", "20:20", "20:25", "20:30", "20:35", "20:40", "20:45",
-  "20:50", "20:55", "21:00", "21:05", "21:10", "21:15", "21:20", "21:25", "21:30", "21:35",
+  "15:00", "15:05", "15:10", "15:15", "15:20", "15:25", "15:30", "15:35", "15:40", "15:45",
+  "15:50", "15:55", "16:00", "21:05", "21:10", "21:15", "21:20", "21:25", "21:30", "21:35",
   "21:40", "21:45", "21:50", "21:55", "22:00", "22:05", "22:10", "22:15", "22:20", "22:25",
   "22:30", "22:35", "22:40", "22:45", "22:50", "22:55", "23:00", "23:05", "23:10", "23:15",
   "23:20", "23:25", "23:30", "23:35", "23:40", "23:45", "23:50", "23:55", "00:00", "00:05",
@@ -56,8 +55,6 @@ const horarios = [
   "01:50", "01:55", "02:00", "02:05", "02:10", "02:15", "02:20", "02:25", "02:30", "02:35",
   "02:40", "02:45", "02:50", "02:55", "03:00", "03:05", "03:10", "03:15", "03:20", "03:25"
 ];
-
-
 
 horarios.forEach(horario => {
   const [hora, minuto] = horario.split(":");
