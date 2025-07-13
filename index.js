@@ -7,19 +7,28 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
 
 console.log("🚀 Bot iniciado...");
-console.log("✅ Chat ID:", process.env.CHAT_ID_LIVRO || "⚠️ NÃO DEFINIDO");
+console.log("✅ ID do bate-papo:", process.env.CHAT_ID_LIVRO || "⚠️ NÃO DEFINIDO");
 console.log("⏰ Horário atual:", new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
 
 function enviarMensagemAleatoria(horario) {
   console.log(`⏰ Executando envio para horário: ${horario}`);
-  const lista = mensagens.produtos;
 
-  if (!lista || lista.length === 0) {
-    console.warn("⚠️ Nenhum produto disponível na lista geral.");
+  const prioridade = mensagens.prioritarios || [];
+  const lista = mensagens.produtos || [];
+
+  let produto;
+
+  if (prioridade.length > 0) {
+    produto = prioridade.shift(); // remove o primeiro da lista de prioridade
+    fs.writeFileSync("mensagens.json", JSON.stringify(mensagens, null, 2)); // atualiza o JSON
+    console.log("🔥 Enviando produto prioritário!");
+  } else if (lista.length > 0) {
+    produto = lista[Math.floor(Math.random() * lista.length)];
+    console.log("🎲 Enviando produto sorteado!");
+  } else {
+    console.warn("⚠️ Nenhum produto disponível.");
     return;
   }
-
-  const produto = lista[Math.floor(Math.random() * lista.length)];
 
   if (!produto.mensagem || produto.mensagem.trim() === "") {
     console.warn("⚠️ Produto com mensagem vazia.");
