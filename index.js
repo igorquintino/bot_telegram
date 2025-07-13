@@ -6,45 +6,56 @@ const TelegramBot = require("node-telegram-bot-api");
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
 
+const chatId = process.env.CHAT_ID_LIVRO;
+
 console.log("🚀 Bot iniciado...");
-console.log("✅ ID do bate-papo:", process.env.CHAT_ID_LIVRO || "⚠️ NÃO DEFINIDO");
+console.log("✅ Chat ID:", chatId || "⚠️ NÃO DEFINIDO");
 console.log("⏰ Horário atual:", new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
-console.log("✅ Bot rodando e pronto para enviar mensagens a cada 5 minutos!");
 
-function enviarMensagemTexto(horario) {
-  console.log(`⏰ Executando envio para: ${horario}`);
+function enviarMensagem() {
+  console.log("⏰ Enviando mensagem a cada 5 minutos...");
 
-  const prioridade = mensagens.produtos_prioritarios || [];
-  const listaGeral = mensagens.produtos || [];
+  const prioridade = mensagens?.prioridade || [];
+  const lista = mensagens?.produtos || [];
 
-  let produto = null;
+  const produto = prioridade.length > 0
+    ? prioridade.shift() // pega e remove o primeiro da fila de prioridade
+    : lista[Math.floor(Math.random() * lista.length)];
 
-  if (prioridade.length > 0) {
-    produto = prioridade.shift(); // Remove o primeiro prioritário
-    fs.writeFileSync("mensagens.json", JSON.stringify(mensagens, null, 2)); // Atualiza o arquivo
-    console.log("🎯 Enviando produto prioritário");
-  } else if (listaGeral.length > 0) {
-    produto = listaGeral[Math.floor(Math.random() * listaGeral.length)];
-    console.log("📦 Enviando produto aleatório");
-  }
-
-  if (!produto || !produto.mensagem || produto.mensagem.trim() === "") {
-    console.warn("⚠️ Nenhum produto disponível para envio.");
+  if (!produto || !produto.mensagem) {
+    console.warn("⚠️ Produto vazio ou sem mensagem.");
     return;
   }
 
-  bot.sendMessage(process.env.CHAT_ID_LIVRO, produto.mensagem, { parse_mode: "HTML" })
-    .then(() => console.log("✅ Mensagem enviada com sucesso!"))
-    .catch(err => {
-      console.error("❌ Erro ao enviar mensagem:");
-      console.error(err.message);
-    });
+  if (prioridade.length > 0) {
+    mensagens.prioridade = prioridade;
+    fs.writeFileSync("mensagens.json", JSON.stringify(mensagens, null, 2), "utf8");
+  }
+
+  if (produto.caminho && fs.existsSync(produto.caminho)) {
+    try {
+      const buffer = fs.readFileSync(produto.caminho);
+      bot.sendPhoto(chatId, buffer, {
+        caption: produto.mensagem,
+        parse_mode: "HTML"
+      })
+      .then(() => console.log("✅ Enviado com imagem"))
+      .catch(err => {
+        console.error("❌ Erro ao enviar imagem:", err?.response?.body?.description);
+      });
+    } catch (erroImagem) {
+      console.error("❌ Erro ao ler imagem:", produto.caminho);
+      bot.sendMessage(chatId, produto.mensagem, { parse_mode: "HTML" });
+    }
+  } else {
+    bot.sendMessage(chatId, produto.mensagem, { parse_mode: "HTML" });
+    console.log("📩 Enviado sem imagem.");
+  }
 }
 
-// ⏰ Envia a cada 5 minutos
-cron.schedule("*/5 * * * *", () => {
-  const horario = new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo" });
-  enviarMensagemTexto(horario);
-}, {
+// Agendamento: a cada 5 minutos
+cron.schedule("*/5 * * * *", enviarMensagem, {
   timezone: "America/Sao_Paulo"
 });
+
+console.log("✅ Bot rodando com envio a cada 5 minutos!");
