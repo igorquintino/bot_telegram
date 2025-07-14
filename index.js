@@ -1,72 +1,58 @@
-require("dotenv").config();
 const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
-const path = require('path');
 
-const token = 'SEU_TOKEN_AQUI'; // Substitua pelo seu token do bot
-const chatId = '-1002396161701'; // ID do canal
-const jsonPath = path.join(__dirname, 'mensagens.json');
+const token = process.env.BOT_TOKEN;
+const chatId = process.env.CHAT_ID;
+const TEMPO_ENVIO = 5 * 60 * 1000; // 5 minutos
+
+if (!token || !chatId) {
+  console.error('❌ BOT_TOKEN ou CHAT_ID não definidos no ambiente.');
+  process.exit(1);
+}
 
 const bot = new TelegramBot(token, { polling: false });
 
-let mensagens = [];
-let mensagensPrioritarias = [];
-let contadorMensagens = 0;
-
 function carregarMensagens() {
   try {
-    const data = fs.readFileSync(jsonPath, 'utf8');
-    const json = JSON.parse(data);
-
-    mensagensPrioritarias = json.prioritarios || [];
-    mensagens = json.mensagens || [];
-    console.log(`✅ Mensagens carregadas. ${mensagens.length} normais e ${mensagensPrioritarias.length} prioritárias.`);
-  } catch (err) {
-    console.error('❌ Erro ao carregar mensagens:', err);
+    const data = fs.readFileSync('./mensagens.json', 'utf8');
+    return JSON.parse(data);
+  } catch (erro) {
+    console.error('❌ Erro ao carregar mensagens:', erro);
+    return [];
   }
 }
 
-function escolherMensagem() {
-  if (mensagensPrioritarias.length > 0) {
-    return mensagensPrioritarias.shift(); // remove da lista
+function sortearMensagem(mensagens) {
+  if (mensagens.length === 0) return null;
+
+  const prioritarias = mensagens.filter(m => m.prioridade === true);
+  if (prioritarias.length > 0) {
+    const escolhida = prioritarias[Math.floor(Math.random() * prioritarias.length)];
+    escolhida.prioridade = false;
+    return escolhida;
   }
 
-  if (mensagens.length === 0) {
-    return null;
-  }
-
-  const index = Math.floor(Math.random() * mensagens.length);
-  return mensagens[index];
+  return mensagens[Math.floor(Math.random() * mensagens.length)];
 }
 
 function enviarMensagem() {
-  const mensagem = escolherMensagem();
+  const mensagens = carregarMensagens();
+  const mensagem = sortearMensagem(mensagens);
 
   if (!mensagem || !mensagem.texto) {
     console.warn('⚠️ Produto vazio ou sem mensagem.');
     return;
   }
 
-  bot.sendMessage(chatId, mensagem.texto, { parse_mode: 'HTML' })
-    .then(() => {
-      console.log(`✅ Mensagem enviada com sucesso! (${++contadorMensagens})`);
-    })
-    .catch((err) => {
-      console.error('❌ Erro ao enviar mensagem:', err.message);
-    });
+  bot.sendMessage(chatId, mensagem.texto)
+    .then(() => console.log('✅ Mensagem enviada com sucesso!'))
+    .catch((erro) => console.error('❌ Erro ao enviar mensagem:', erro));
 }
 
-function iniciarEnvio() {
-  console.log('🚀 Bot iniciado...');
-  console.log(`✅ ID do bate-papo: ${chatId}`);
-  carregarMensagens();
+console.log('🚀 Bot iniciado...');
+console.log(`✅ ID do bate-papo: ${chatId}`);
+console.log(`🕒 Horário atual: ${new Date().toLocaleString()}`);
+console.log('✅ Bot rodando com envio a cada 5 minutos!');
 
-  enviarMensagem(); // dispara uma imediatamente
-  setInterval(() => {
-    const horaAtual = new Date().toLocaleString();
-    console.log(`⏰ Enviando mensagem às: ${horaAtual}`);
-    enviarMensagem();
-  }, 5 * 60 * 1000); // 5 minutos
-}
-
-iniciarEnvio();
+enviarMensagem();
+setInterval(enviarMensagem, TEMPO_ENVIO);
