@@ -1,6 +1,9 @@
 const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
 
+// Carrega variáveis de ambiente
+require('dotenv').config();
+
 const token = process.env.BOT_TOKEN;
 const chatId = process.env.CHAT_ID;
 const TEMPO_ENVIO = 5 * 60 * 1000; // 5 minutos
@@ -15,7 +18,8 @@ const bot = new TelegramBot(token, { polling: false });
 function carregarMensagens() {
   try {
     const data = fs.readFileSync('./mensagens.json', 'utf8');
-    return JSON.parse(data);
+    const json = JSON.parse(data);
+    return json.geral || []; // garante que seja um array
   } catch (erro) {
     console.error('❌ Erro ao carregar mensagens:', erro);
     return [];
@@ -39,12 +43,12 @@ function enviarMensagem() {
   const mensagens = carregarMensagens();
   const mensagem = sortearMensagem(mensagens);
 
-  if (!mensagem || !mensagem.texto) {
+  if (!mensagem || !mensagem.mensagem) {
     console.warn('⚠️ Produto vazio ou sem mensagem.');
     return;
   }
 
-  bot.sendMessage(chatId, mensagem.texto)
+  bot.sendMessage(chatId, mensagem.mensagem, { parse_mode: 'HTML' })
     .then(() => console.log('✅ Mensagem enviada com sucesso!'))
     .catch((erro) => console.error('❌ Erro ao enviar mensagem:', erro));
 }
