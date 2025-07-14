@@ -5,7 +5,7 @@ const path = require('path');
 
 const token = 'SEU_TOKEN_AQUI'; // Substitua pelo seu token do bot
 const chatId = '-1002396161701'; // ID do canal
-const jsonPath = path.join(__dirname, 'mensagens_sem_imagem.json');
+const jsonPath = path.join(__dirname, 'mensagens.json');
 
 const bot = new TelegramBot(token, { polling: false });
 
