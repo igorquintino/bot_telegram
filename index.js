@@ -1,61 +1,72 @@
 require("dotenv").config();
-const fs = require("fs");
-const cron = require("node-cron");
-const TelegramBot = require("node-telegram-bot-api");
+const fs = require('fs');
+const TelegramBot = require('node-telegram-bot-api');
+const path = require('path');
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
-const mensagens = JSON.parse(fs.readFileSync("mensagens.json", "utf8"));
+const token = 'SEU_TOKEN_AQUI'; // Substitua pelo seu token do bot
+const chatId = '-1002396161701'; // ID do canal
+const jsonPath = path.join(__dirname, 'mensagens_sem_imagem.json');
 
-const chatId = process.env.CHAT_ID_LIVRO;
+const bot = new TelegramBot(token, { polling: false });
 
-console.log("🚀 Bot iniciado...");
-console.log("✅ Chat ID:", chatId || "⚠️ NÃO DEFINIDO");
-console.log("⏰ Horário atual:", new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }));
+let mensagens = [];
+let mensagensPrioritarias = [];
+let contadorMensagens = 0;
 
-function enviarMensagem() {
-  console.log("⏰ Enviando mensagem a cada 5 minutos...");
+function carregarMensagens() {
+  try {
+    const data = fs.readFileSync(jsonPath, 'utf8');
+    const json = JSON.parse(data);
 
-  const prioridade = mensagens?.prioridade || [];
-  const lista = mensagens?.produtos || [];
-
-  const produto = prioridade.length > 0
-    ? prioridade.shift() // pega e remove o primeiro da fila de prioridade
-    : lista[Math.floor(Math.random() * lista.length)];
-
-  if (!produto || !produto.mensagem) {
-    console.warn("⚠️ Produto vazio ou sem mensagem.");
-    return;
-  }
-
-  if (prioridade.length > 0) {
-    mensagens.prioridade = prioridade;
-    fs.writeFileSync("mensagens.json", JSON.stringify(mensagens, null, 2), "utf8");
-  }
-
-  if (produto.caminho && fs.existsSync(produto.caminho)) {
-    try {
-      const buffer = fs.readFileSync(produto.caminho);
-      bot.sendPhoto(chatId, buffer, {
-        caption: produto.mensagem,
-        parse_mode: "HTML"
-      })
-      .then(() => console.log("✅ Enviado com imagem"))
-      .catch(err => {
-        console.error("❌ Erro ao enviar imagem:", err?.response?.body?.description);
-      });
-    } catch (erroImagem) {
-      console.error("❌ Erro ao ler imagem:", produto.caminho);
-      bot.sendMessage(chatId, produto.mensagem, { parse_mode: "HTML" });
-    }
-  } else {
-    bot.sendMessage(chatId, produto.mensagem, { parse_mode: "HTML" });
-    console.log("📩 Enviado sem imagem.");
+    mensagensPrioritarias = json.prioritarios || [];
+    mensagens = json.mensagens || [];
+    console.log(`✅ Mensagens carregadas. ${mensagens.length} normais e ${mensagensPrioritarias.length} prioritárias.`);
+  } catch (err) {
+    console.error('❌ Erro ao carregar mensagens:', err);
   }
 }
 
-// Agendamento: a cada 5 minutos
-cron.schedule("*/5 * * * *", enviarMensagem, {
-  timezone: "America/Sao_Paulo"
-});
+function escolherMensagem() {
+  if (mensagensPrioritarias.length > 0) {
+    return mensagensPrioritarias.shift(); // remove da lista
+  }
 
-console.log("✅ Bot rodando com envio a cada 5 minutos!");
+  if (mensagens.length === 0) {
+    return null;
+  }
+
+  const index = Math.floor(Math.random() * mensagens.length);
+  return mensagens[index];
+}
+
+function enviarMensagem() {
+  const mensagem = escolherMensagem();
+
+  if (!mensagem || !mensagem.texto) {
+    console.warn('⚠️ Produto vazio ou sem mensagem.');
+    return;
+  }
+
+  bot.sendMessage(chatId, mensagem.texto, { parse_mode: 'HTML' })
+    .then(() => {
+      console.log(`✅ Mensagem enviada com sucesso! (${++contadorMensagens})`);
+    })
+    .catch((err) => {
+      console.error('❌ Erro ao enviar mensagem:', err.message);
+    });
+}
+
+function iniciarEnvio() {
+  console.log('🚀 Bot iniciado...');
+  console.log(`✅ ID do bate-papo: ${chatId}`);
+  carregarMensagens();
+
+  enviarMensagem(); // dispara uma imediatamente
+  setInterval(() => {
+    const horaAtual = new Date().toLocaleString();
+    console.log(`⏰ Enviando mensagem às: ${horaAtual}`);
+    enviarMensagem();
+  }, 5 * 60 * 1000); // 5 minutos
+}
+
+iniciarEnvio();
