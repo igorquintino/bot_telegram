@@ -1,207 +1,206 @@
-
 {
   "geral": [
-     {
-    "nome": "Produto Teste 1",
-    "preco": "R$ 10.00",
-    "preco_desconto": "R$ 8.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto1",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 1</b>\n\n<s>R$ 10.00</s>\n💸 Agora por: <b>R$ 8.00</b>\n\n<a href=\"https://example.com/produto1\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 2",
-    "preco": "R$ 20.00",
-    "preco_desconto": "R$ 18.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto2",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 2</b>\n\n<s>R$ 20.00</s>\n💸 Agora por: <b>R$ 18.00</b>\n\n<a href=\"https://example.com/produto2\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 3",
-    "preco": "R$ 30.00",
-    "preco_desconto": "R$ 28.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto3",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 3</b>\n\n<s>R$ 30.00</s>\n💸 Agora por: <b>R$ 28.00</b>\n\n<a href=\"https://example.com/produto3\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 4",
-    "preco": "R$ 40.00",
-    "preco_desconto": "R$ 38.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto4",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 4</b>\n\n<s>R$ 40.00</s>\n💸 Agora por: <b>R$ 38.00</b>\n\n<a href=\"https://example.com/produto4\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 5",
-    "preco": "R$ 50.00",
-    "preco_desconto": "R$ 48.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto5",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 5</b>\n\n<s>R$ 50.00</s>\n💸 Agora por: <b>R$ 48.00</b>\n\n<a href=\"https://example.com/produto5\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 6",
-    "preco": "R$ 60.00",
-    "preco_desconto": "R$ 58.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto6",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 6</b>\n\n<s>R$ 60.00</s>\n💸 Agora por: <b>R$ 58.00</b>\n\n<a href=\"https://example.com/produto6\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 7",
-    "preco": "R$ 70.00",
-    "preco_desconto": "R$ 68.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto7",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 7</b>\n\n<s>R$ 70.00</s>\n💸 Agora por: <b>R$ 68.00</b>\n\n<a href=\"https://example.com/produto7\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 8",
-    "preco": "R$ 80.00",
-    "preco_desconto": "R$ 78.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto8",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 8</b>\n\n<s>R$ 80.00</s>\n💸 Agora por: <b>R$ 78.00</b>\n\n<a href=\"https://example.com/produto8\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 9",
-    "preco": "R$ 90.00",
-    "preco_desconto": "R$ 88.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto9",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 9</b>\n\n<s>R$ 90.00</s>\n💸 Agora por: <b>R$ 88.00</b>\n\n<a href=\"https://example.com/produto9\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 10",
-    "preco": "R$ 100.00",
-    "preco_desconto": "R$ 98.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto10",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 10</b>\n\n<s>R$ 100.00</s>\n💸 Agora por: <b>R$ 98.00</b>\n\n<a href=\"https://example.com/produto10\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 11",
-    "preco": "R$ 110.00",
-    "preco_desconto": "R$ 108.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto11",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 11</b>\n\n<s>R$ 110.00</s>\n💸 Agora por: <b>R$ 108.00</b>\n\n<a href=\"https://example.com/produto11\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 12",
-    "preco": "R$ 120.00",
-    "preco_desconto": "R$ 118.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto12",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 12</b>\n\n<s>R$ 120.00</s>\n💸 Agora por: <b>R$ 118.00</b>\n\n<a href=\"https://example.com/produto12\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 13",
-    "preco": "R$ 130.00",
-    "preco_desconto": "R$ 128.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto13",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 13</b>\n\n<s>R$ 130.00</s>\n💸 Agora por: <b>R$ 128.00</b>\n\n<a href=\"https://example.com/produto13\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 14",
-    "preco": "R$ 140.00",
-    "preco_desconto": "R$ 138.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto14",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 14</b>\n\n<s>R$ 140.00</s>\n💸 Agora por: <b>R$ 138.00</b>\n\n<a href=\"https://example.com/produto14\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 15",
-    "preco": "R$ 150.00",
-    "preco_desconto": "R$ 148.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto15",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 15</b>\n\n<s>R$ 150.00</s>\n💸 Agora por: <b>R$ 148.00</b>\n\n<a href=\"https://example.com/produto15\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 16",
-    "preco": "R$ 160.00",
-    "preco_desconto": "R$ 158.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto16",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 16</b>\n\n<s>R$ 160.00</s>\n💸 Agora por: <b>R$ 158.00</b>\n\n<a href=\"https://example.com/produto16\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 17",
-    "preco": "R$ 170.00",
-    "preco_desconto": "R$ 168.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto17",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 17</b>\n\n<s>R$ 170.00</s>\n💸 Agora por: <b>R$ 168.00</b>\n\n<a href=\"https://example.com/produto17\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 18",
-    "preco": "R$ 180.00",
-    "preco_desconto": "R$ 178.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto18",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 18</b>\n\n<s>R$ 180.00</s>\n💸 Agora por: <b>R$ 178.00</b>\n\n<a href=\"https://example.com/produto18\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 19",
-    "preco": "R$ 190.00",
-    "preco_desconto": "R$ 188.00",
-    "frete_gratis": "Não",
-    "link": "https://example.com/produto19",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 19</b>\n\n<s>R$ 190.00</s>\n💸 Agora por: <b>R$ 188.00</b>\n\n<a href=\"https://example.com/produto19\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  },
-  {
-    "nome": "Produto Teste 20",
-    "preco": "R$ 200.00",
-    "preco_desconto": "R$ 198.00",
-    "frete_gratis": "Sim",
-    "link": "https://example.com/produto20",
-    "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
-    "mensagem": "🎯 <b>Produto Teste 20</b>\n\n<s>R$ 200.00</s>\n💸 Agora por: <b>R$ 198.00</b>\n\n<a href=\"https://example.com/produto20\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
-  }
+    {
+      "nome": "Produto Teste 1",
+      "preco": "R$ 10.00",
+      "preco_desconto": "R$ 8.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto1",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/1.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/1.jpg",
+      "mensagem": "🎯 <b>Produto Teste 1</b>\n\n<s>R$ 10.00</s>\n💸 Agora por: <b>R$ 8.00</b>\n\n<a href=\"https://example.com/produto1\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 2",
+      "preco": "R$ 20.00",
+      "preco_desconto": "R$ 18.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto2",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/2.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/2.jpg",
+      "mensagem": "🎯 <b>Produto Teste 2</b>\n\n<s>R$ 20.00</s>\n💸 Agora por: <b>R$ 18.00</b>\n\n<a href=\"https://example.com/produto2\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 3",
+      "preco": "R$ 30.00",
+      "preco_desconto": "R$ 28.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto3",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/3.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/3.jpg",
+      "mensagem": "🎯 <b>Produto Teste 3</b>\n\n<s>R$ 30.00</s>\n💸 Agora por: <b>R$ 28.00</b>\n\n<a href=\"https://example.com/produto3\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 4",
+      "preco": "R$ 40.00",
+      "preco_desconto": "R$ 38.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto4",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/4.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/4.jpg",
+      "mensagem": "🎯 <b>Produto Teste 4</b>\n\n<s>R$ 40.00</s>\n💸 Agora por: <b>R$ 38.00</b>\n\n<a href=\"https://example.com/produto4\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 5",
+      "preco": "R$ 50.00",
+      "preco_desconto": "R$ 48.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto5",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/5.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/5.jpg",
+      "mensagem": "🎯 <b>Produto Teste 5</b>\n\n<s>R$ 50.00</s>\n💸 Agora por: <b>R$ 48.00</b>\n\n<a href=\"https://example.com/produto5\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 6",
+      "preco": "R$ 60.00",
+      "preco_desconto": "R$ 58.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto6",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/6.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/6.jpg",
+      "mensagem": "🎯 <b>Produto Teste 6</b>\n\n<s>R$ 60.00</s>\n💸 Agora por: <b>R$ 58.00</b>\n\n<a href=\"https://example.com/produto6\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 7",
+      "preco": "R$ 70.00",
+      "preco_desconto": "R$ 68.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto7",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/7.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/7.jpg",
+      "mensagem": "🎯 <b>Produto Teste 7</b>\n\n<s>R$ 70.00</s>\n💸 Agora por: <b>R$ 68.00</b>\n\n<a href=\"https://example.com/produto7\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 8",
+      "preco": "R$ 80.00",
+      "preco_desconto": "R$ 78.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto8",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/8.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/8.jpg",
+      "mensagem": "🎯 <b>Produto Teste 8</b>\n\n<s>R$ 80.00</s>\n💸 Agora por: <b>R$ 78.00</b>\n\n<a href=\"https://example.com/produto8\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 9",
+      "preco": "R$ 90.00",
+      "preco_desconto": "R$ 88.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto9",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/9.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/9.jpg",
+      "mensagem": "🎯 <b>Produto Teste 9</b>\n\n<s>R$ 90.00</s>\n💸 Agora por: <b>R$ 88.00</b>\n\n<a href=\"https://example.com/produto9\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 10",
+      "preco": "R$ 100.00",
+      "preco_desconto": "R$ 98.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto10",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/10.jpg",
+      "mensagem": "🎯 <b>Produto Teste 10</b>\n\n<s>R$ 100.00</s>\n💸 Agora por: <b>R$ 98.00</b>\n\n<a href=\"https://example.com/produto10\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 11",
+      "preco": "R$ 110.00",
+      "preco_desconto": "R$ 108.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto11",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/11.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/11.jpg",
+      "mensagem": "🎯 <b>Produto Teste 11</b>\n\n<s>R$ 110.00</s>\n💸 Agora por: <b>R$ 108.00</b>\n\n<a href=\"https://example.com/produto11\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 12",
+      "preco": "R$ 120.00",
+      "preco_desconto": "R$ 118.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto12",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/12.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/12.jpg",
+      "mensagem": "🎯 <b>Produto Teste 12</b>\n\n<s>R$ 120.00</s>\n💸 Agora por: <b>R$ 118.00</b>\n\n<a href=\"https://example.com/produto12\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 13",
+      "preco": "R$ 130.00",
+      "preco_desconto": "R$ 128.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto13",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/13.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/13.jpg",
+      "mensagem": "🎯 <b>Produto Teste 13</b>\n\n<s>R$ 130.00</s>\n💸 Agora por: <b>R$ 128.00</b>\n\n<a href=\"https://example.com/produto13\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 14",
+      "preco": "R$ 140.00",
+      "preco_desconto": "R$ 138.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto14",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/14.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/14.jpg",
+      "mensagem": "🎯 <b>Produto Teste 14</b>\n\n<s>R$ 140.00</s>\n💸 Agora por: <b>R$ 138.00</b>\n\n<a href=\"https://example.com/produto14\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 15",
+      "preco": "R$ 150.00",
+      "preco_desconto": "R$ 148.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto15",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/15.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/15.jpg",
+      "mensagem": "🎯 <b>Produto Teste 15</b>\n\n<s>R$ 150.00</s>\n💸 Agora por: <b>R$ 148.00</b>\n\n<a href=\"https://example.com/produto15\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 16",
+      "preco": "R$ 160.00",
+      "preco_desconto": "R$ 158.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto16",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/16.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/16.jpg",
+      "mensagem": "🎯 <b>Produto Teste 16</b>\n\n<s>R$ 160.00</s>\n💸 Agora por: <b>R$ 158.00</b>\n\n<a href=\"https://example.com/produto16\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 17",
+      "preco": "R$ 170.00",
+      "preco_desconto": "R$ 168.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto17",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/17.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/17.jpg",
+      "mensagem": "🎯 <b>Produto Teste 17</b>\n\n<s>R$ 170.00</s>\n💸 Agora por: <b>R$ 168.00</b>\n\n<a href=\"https://example.com/produto17\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 18",
+      "preco": "R$ 180.00",
+      "preco_desconto": "R$ 178.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto18",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/18.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/18.jpg",
+      "mensagem": "🎯 <b>Produto Teste 18</b>\n\n<s>R$ 180.00</s>\n💸 Agora por: <b>R$ 178.00</b>\n\n<a href=\"https://example.com/produto18\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 19",
+      "preco": "R$ 190.00",
+      "preco_desconto": "R$ 188.00",
+      "frete_gratis": "Não",
+      "link": "https://example.com/produto19",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/19.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/19.jpg",
+      "mensagem": "🎯 <b>Produto Teste 19</b>\n\n<s>R$ 190.00</s>\n💸 Agora por: <b>R$ 188.00</b>\n\n<a href=\"https://example.com/produto19\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "Produto Teste 20",
+      "preco": "R$ 200.00",
+      "preco_desconto": "R$ 198.00",
+      "frete_gratis": "Sim",
+      "link": "https://example.com/produto20",
+      "imagem": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/20.jpg",
+      "caminho": "https://raw.github.com/igorquintino/bot_telegram/main/imagens/20.jpg",
+      "mensagem": "🎯 <b>Produto Teste 20</b>\n\n<s>R$ 200.00</s>\n💸 Agora por: <b>R$ 198.00</b>\n\n<a href=\"https://example.com/produto20\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    }
   ],
   "prioridade": [],
   "prioritarios": []
-    }
+}
