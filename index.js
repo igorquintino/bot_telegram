@@ -2,12 +2,12 @@ const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
 require('dotenv').config();
 
-const token = process.env.BOT_TOKEN;
-const chatId = process.env.CHAT_ID;
+const token = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
+const chatId = process.env.CHAT_ID || process.env.CHAT_ID_LIVRO;
 const TEMPO_ENVIO = 5 * 60 * 1000; // 5 minutos
 
 if (!token || !chatId) {
-  console.error('❌ BOT_TOKEN ou CHAT_ID não definidos no ambiente.');
+  console.error('❌ BOT_TOKEN/TELEGRAM_BOT_TOKEN ou CHAT_ID/CHAT_ID_LIVRO não definidos no .env');
   process.exit(1);
 }
 
@@ -17,94 +17,56 @@ function carregarMensagens() {
   try {
     const data = fs.readFileSync('./mensagens.json', 'utf8');
     const json = JSON.parse(data);
-    return json.geral || [];
+    // aceita tanto {geral:[...]} quanto lista simples
+    if (Array.isArray(json)) return json;
+    if (Array.isArray(json.geral)) return json.geral;
+    return [];
   } catch (erro) {
-    console.error('❌ Erro ao carregar mensagens:', erro);
+    console.error('❌ Erro ao carregar mensagens:', erro.message);
     return [];
   }
 }
 
 function sortearMensagem(mensagens) {
-  if (mensagens.length === 0) return null;
+  if (!mensagens.length) return null;
 
   const prioritarias = mensagens.filter(m => m.prioridade === true);
   if (prioritarias.length > 0) {
     const escolhida = prioritarias[Math.floor(Math.random() * prioritarias.length)];
+    // não persiste em disco; apenas marca em memória
     escolhida.prioridade = false;
     return escolhida;
-  }
+    }
   return mensagens[Math.floor(Math.random() * mensagens.length)];
 }
 
-function normalizarUrlImagem(url) {
-  if (!url || typeof url !== 'string') return { ok: false, motivo: 'URL vazia' };
+// ----- PREÇOS / COPY -----
+const ehPreco = (val) => {
+  if (!val || typeof val !== 'string') return false;
+  // aceita "R$ 99,90" | "R$99.90" | "99,90" | "99.90"
+  return /^(\s*R\$\s*)?\d{1,3}(\.\d{3})*(,\d{2}|\.\d{2})?$/.test(val.trim());
+};
+const S = (v) => (v ?? '').toString().trim();
 
-  // Corrige GitHub Raw
-  url = url.replace('https://raw.github.com/', 'https://raw.githubusercontent.com/');
+function montarLegenda(p) {
+  const nome = S(p.nome);
+  const preco = S(p.preco);
+  const precoDesc = S(p.preco_desconto);
+  const link = S(p.link);
+  const frete = S(p.frete_gratis);
+  const fraseFrete = (
+    frete === 'Sim' || frete === 'TRUE' || frete === 'true' || frete === 'Frete Grátis' || p.frete_gratis === true
+  ) ? '🚚 Frete Grátis' : '';
 
-  // Imgur álbum/página -> inválido para sendPhoto
-  if (url.includes('imgur.com/a/') || url.includes('imgur.com/gallery/')) {
-    return { ok: false, motivo: 'URL do Imgur é álbum/página (use i.imgur.com/arquivo.jpg)' };
-  }
+  const linhas = [];
+  if (nome) linhas.push(`🎯 <b>${nome}</b>`);
 
-  // Dica: se for imgur "normal", recomende usar i.imgur.com
-  if (url.includes('://imgur.com/') && !url.includes('://i.imgur.com/')) {
-    return { ok: false, motivo: 'URL do Imgur não é direta. Use i.imgur.com/ARQUIVO.jpg' };
-  }
+  const temPreco = ehPreco(preco);
+  const descEhPreco = ehPreco(precoDesc);
 
-  // Opcional: checar extensão (não é obrigatório, mas ajuda)
-  const temExtensao = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
-  if (!temExtensao && url.includes('i.imgur.com')) {
-    return { ok: false, motivo: 'Link do Imgur sem extensão (ex.: .jpg/.png)' };
-  }
-
-  return { ok: true, url };
-}
-
-function cortarLegenda(caption, limite = 1024) {
-  if (!caption) return '';
-  if (caption.length <= limite) return caption;
-  // preserva HTML básico cortando no limite
-  return caption.slice(0, limite - 1) + '…';
-}
-
-function enviarMensagem() {
-  const mensagens = carregarMensagens();
-  const m = sortearMensagem(mensagens);
-
-  if (!m || !m.mensagem) {
-    console.warn('⚠️ Produto vazio ou sem mensagem.');
-    return;
-  }
-
-  const urlOriginal = m.imagem || m.caminho || null;
-  const norm = normalizarUrlImagem(urlOriginal);
-
-  if (urlOriginal && norm.ok) {
-    const caption = cortarLegenda(m.mensagem, 1024);
-    bot.sendPhoto(chatId, norm.url, { caption, parse_mode: 'HTML' })
-      .then(() => console.log('✅ Foto enviada com sucesso!'))
-      .catch((erro) => {
-        console.error('❌ Erro ao enviar foto:', erro?.response?.body || erro.message || erro);
-        // fallback para texto, pra não perder o envio
-        return bot.sendMessage(chatId, m.mensagem, { parse_mode: 'HTML' });
-      })
-      .then(() => console.log('ℹ️ Fallback de texto enviado (se houve erro na foto).'))
-      .catch((erro) => console.error('❌ Erro também no fallback de texto:', erro?.response?.body || erro.message || erro));
-  } else {
-    if (urlOriginal && !norm.ok) {
-      console.warn(`⚠️ Ignorando imagem inválida: ${norm.motivo} | URL: ${urlOriginal}`);
-    }
-    bot.sendMessage(chatId, m.mensagem, { parse_mode: 'HTML' })
-      .then(() => console.log('✅ Mensagem (texto) enviada com sucesso!'))
-      .catch((erro) => console.error('❌ Erro ao enviar mensagem (texto):', erro?.response?.body || erro.message || erro));
-  }
-}
-
-console.log('🚀 Bot iniciado...');
-console.log(`✅ ID do bate-papo: ${chatId}`);
-console.log(`🕒 Horário atual: ${new Date().toLocaleString()}`);
-console.log('✅ Bot rodando com envio a cada 5 minutos!');
-
-enviarMensagem();
-setInterval(enviarMensagem, TEMPO_ENVIO);
+  if (temPreco && descEhPreco) {
+    // preço cheio + preço com desconto (ambos numéricos)
+    linhas.push(`\n<s>${preco}</s>`);
+    linhas.push(`💸 Agora por: <b>${precoDesc}</b>`);
+  } else if (temPreco && precoDesc && !descEhPreco) {
+    // preço cheio
