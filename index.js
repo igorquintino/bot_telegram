@@ -13,33 +13,49 @@ if (!token || !chatId) {
 
 const bot = new TelegramBot(token, { polling: false });
 
+/** Carrega o JSON no formato:
+ * {
+ *   "prioridade": [ ... ],      // opcional
+ *   "prioritarios": [ ... ],    // opcional (sinônimo)
+ *   "geral": [ ... ]            // opcional
+ * }
+ * Também aceita um array simples (retrocompatível).
+ */
 function carregarMensagens() {
   try {
-    const data = fs.readFileSync('./mensagens.json', 'utf8');
-    const json = JSON.parse(data);
-    if (Array.isArray(json)) return json;
-    if (Array.isArray(json.geral)) return json.geral;
-    return [];
+    const raw = fs.readFileSync('./mensagens.json', 'utf8');
+    const json = JSON.parse(raw);
+
+    // Se for array simples, trata tudo como "geral"
+    if (Array.isArray(json)) {
+      return { prioridade: [], geral: json };
+    }
+
+    const prioridade = [
+      ...((json.prioridade || [])),
+      ...((json.prioritarios || [])),
+    ];
+    const geral = (json.geral || []);
+
+    return { prioridade, geral };
   } catch (erro) {
     console.error('❌ Erro ao carregar mensagens:', erro.message);
-    return [];
+    return { prioridade: [], geral: [] };
   }
 }
 
-function sortearMensagem(mensagens) {
-  if (!mensagens.length) return null;
-  const prioritarias = mensagens.filter(m => m.prioridade === true);
-  if (prioritarias.length > 0) {
-    const escolhida = prioritarias[Math.floor(Math.random() * prioritarias.length)];
-    escolhida.prioridade = false; // só em memória
-    return escolhida;
-  }
-  return mensagens[Math.floor(Math.random() * mensagens.length)];
+/** Escolhe 1 item: prioriza "prioridade/prioritarios" se houver. */
+function sortearMensagem(listas) {
+  const { prioridade, geral } = listas;
+  const pool = prioridade.length ? prioridade : geral;
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 // ---------------- PREÇOS / COPY ----------------
 const ehPreco = (val) => {
   if (!val || typeof val !== 'string') return false;
+  // Aceita formatos R$ 1.234,56 | 123,45 | 123.45
   return /^(\s*R\$\s*)?\d{1,3}(\.\d{3})*(,\d{2}|\.\d{2})?$/.test(val.trim());
 };
 const S = (v) => (v ?? '').toString().trim();
@@ -110,21 +126,9 @@ function cortarLegenda(caption, limite = 1024) {
   return caption.length <= limite ? caption : caption.slice(0, limite - 1) + '…';
 }
 
-async function enviarComFotoOuFallback(url, caption) {
-  try {
-    await bot.sendPhoto(chatId, url, { caption, parse_mode: 'HTML', disable_web_page_preview: true });
-    console.log(`✅ Foto enviada: ${url}`);
-  } catch (erro) {
-    const desc = erro?.response?.body?.description || erro.message || 'erro desconhecido';
-    console.error(`❌ Erro ao enviar foto (${desc}). URL: ${url}`);
-    await bot.sendMessage(chatId, caption, { parse_mode: 'HTML', disable_web_page_preview: true });
-    console.log('ℹ️ Fallback de texto enviado.');
-  }
-}
-
 async function enviarMensagem() {
-  const mensagens = carregarMensagens();
-  const m = sortearMensagem(mensagens);
+  const listas = carregarMensagens();
+  const m = sortearMensagem(listas);
   if (!m) {
     console.warn('⚠️ Nenhum produto disponível.');
     return;
@@ -132,12 +136,11 @@ async function enviarMensagem() {
 
   const caption = cortarLegenda(montarLegenda(m), 1024);
 
-  // prioriza caminho, depois imagem
+  // prioriza "caminho", depois "imagem"
   const original = S(m.caminho) || S(m.imagem);
   const norm = normalizarUrlImagem(original);
 
   if (original && norm.ok) {
-    // tenta original e variações (apenas para i.imgur.com)
     const tentativas = variantesImgur(norm.url);
     for (let i = 0; i < tentativas.length; i++) {
       try {
@@ -146,8 +149,7 @@ async function enviarMensagem() {
         return;
       } catch (erro) {
         const desc = erro?.response?.body?.description || erro.message || 'erro desconhecido';
-        console.warn(`⚠️ Falha na tentativa ${i + 1} com ${tentativas[i]} -> ${desc}`);
-        // se for a última tentativa, manda fallback texto
+        console.warn(`⚠️ Falha ao enviar foto (tentativa ${i + 1}): ${desc}`);
         if (i === tentativas.length - 1) {
           await bot.sendMessage(chatId, caption, { parse_mode: 'HTML', disable_web_page_preview: true });
           console.log('ℹ️ Fallback de texto enviado após falhas de imagem.');
