@@ -28,7 +28,7 @@ function carregarEstrutura() {
     const estrutura = {
       geral: Array.isArray(json.geral) ? json.geral : [],
       prioridade: Array.isArray(json.prioridade) ? json.prioridade : [],
-      _alterado: false
+      _alterado: false,
     };
 
     // Se existir "prioritarios", junta em "prioridade" e limpa "prioritarios"
@@ -48,8 +48,8 @@ function salvarEstrutura(estrutura) {
   try {
     const toSave = {
       geral: estrutura.geral,
-      prioridade: estrutura.prioridade
-      // intencionalmente não salvamos "prioritarios"
+      prioridade: estrutura.prioridade,
+      // intencionalmente NÃO salvamos "prioritarios"
     };
     fs.writeFileSync(JSON_PATH, JSON.stringify(toSave, null, 2), 'utf8');
   } catch (err) {
@@ -65,35 +65,39 @@ function sortearEConsumir(estrutura) {
     const escolhido = estrutura.prioridade.splice(idx, 1)[0]; // remove!
     salvarEstrutura(estrutura); // persiste remoção
     console.log(`⭐ Prioritário enviado. Restam ${estrutura.prioridade.length} prioritários.`);
-    return escolhido;
+    return { item: escolhido, origem: 'prioridade' };
   }
 
   // 2) Senão, sorteia da geral (não remove)
   if (estrutura.geral.length > 0) {
-    return estrutura.geral[Math.floor(Math.random() * estrutura.geral.length)];
+    const item = estrutura.geral[Math.floor(Math.random() * estrutura.geral.length)];
+    return { item, origem: 'geral' };
   }
 
-  return null;
+  return { item: null, origem: null };
 }
 
-/* ---------------------- Util de strings/preços ----------------------- */
+/* ---------------------- Utils de strings/preços ---------------------- */
 const S = (v) => (v ?? '').toString().trim();
 
-/** Extrai número de preço aceitando , ou . como separador decimal */
+/** Extrai número de preço aceitando , ou . como separador decimal e vários ruídos */
 function extrairNumeroPreco(str) {
   if (!str) return null;
+
+  // normaliza espaços e remove símbolos
   let s = String(str)
     .replace(/\s+/g, ' ')
-    .replace(/R\$\s*/gi, '')      // remove R$
-    .replace(/[^\d.,]/g, '');     // mantém dígitos, ponto e vírgula
+    .replace(/R\$\s*/gi, '')       // remove "R$"
+    .replace(/[^\d.,]/g, '');      // mantém apenas dígitos, ponto e vírgula
 
   if (!s) return null;
 
-  // . e , -> assume . milhar e , decimal
+  // Caso tenha milhar com ponto e decimal com vírgula: 1.234,56 -> 1234.56
   if (s.includes('.') && s.includes(',')) {
-    s = s.replace(/\./g, '').replace(',', '.'); // 1.234,56 -> 1234.56
+    s = s.replace(/\./g, '').replace(',', '.');
   } else if (s.includes(',')) {
-    s = s.replace(',', '.'); // 63,78 -> 63.78
+    // só vírgula -> vira decimal
+    s = s.replace(',', '.');
   }
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
@@ -114,8 +118,8 @@ function fmtBR(n) {
 function normalizarRotuloPreco(str) {
   if (!str) return '';
   const n = extrairNumeroPreco(str);
-  if (n === null) return S(str);  // não é número: é copy -> mantém
-  return fmtBR(n);
+  if (n === null) return S(str); // não é número: é copy -> mantém
+  return fmtBR(n);               // garante vírgula como separador decimal
 }
 
 /* ----------------------- Montagem da legenda ------------------------- */
@@ -139,17 +143,22 @@ function montarLegenda(p) {
   const linhas = [];
   if (nome) linhas.push(`🏷️ <b>${nome}</b>`);
 
+  // Casos:
   if (temPreco && temDescPreco) {
     linhas.push(`\n<s>${preco}</s>`);
     linhas.push(`💸 Agora por: <b>${precoDesc}</b>`);
   } else if (temPreco && precoDesc && !temDescPreco) {
+    // preco normal + copy no preco_desconto
     linhas.push(`\n${preco}`);
     linhas.push(precoDesc);
   } else if (temPreco && !precoDesc) {
+    // só preco normal
     linhas.push(`\n${preco}`);
   } else if (!temPreco && temDescPreco) {
+    // só preco com desconto numérico
     linhas.push(`\n💸 Agora por: <b>${precoDesc}</b>`);
   } else {
+    // nenhum é numérico -> trata como textos livres
     if (preco) linhas.push(`\n${preco}`);
     if (precoDesc) linhas.push(preco ? precoDesc : `\n${precoDesc}`);
   }
@@ -163,7 +172,8 @@ function montarLegenda(p) {
 /* --------------------- Imagem + fallback texto ---------------------- */
 function normalizarUrlImagem(url) {
   if (!url || typeof url !== 'string') return { ok: false, url: null, motivo: 'URL vazia' };
-  let u = url.replace('https://raw.github.com/', 'https://raw.githubusercontent.com/');
+  let u = url.trim().replace(/^\.+/, ''); // remove ponto inicial acidental, ex.: ".https://"
+  u = u.replace('https://raw.github.com/', 'https://raw.githubusercontent.com/');
   if (u.includes('imgur.com/a/') || u.includes('imgur.com/gallery/')) {
     return { ok: false, url: null, motivo: 'URL do Imgur é álbum/página (use i.imgur.com/arquivo.jpg)' };
   }
@@ -196,7 +206,7 @@ async function enviarMensagem() {
   }
 
   // Sorteia e consome prioritário (se houver), senão usa geral
-  const m = sortearEConsumir(estrutura);
+  const { item: m, origem } = sortearEConsumir(estrutura);
   if (!m) {
     console.warn('⚠️ Nenhum produto disponível.');
     return;
@@ -213,9 +223,9 @@ async function enviarMensagem() {
         await bot.sendPhoto(chatId, tentativas[i], {
           caption,
           parse_mode: 'HTML',
-          disable_web_page_preview: true
+          disable_web_page_preview: true,
         });
-        console.log(`✅ Foto enviada (tentativa ${i + 1}): ${tentativas[i]}`);
+        console.log(`✅ Foto enviada (${origem}) (tentativa ${i + 1}): ${tentativas[i]}`);
         return;
       } catch (erro) {
         const desc = erro?.response?.body?.description || erro.message || 'erro desconhecido';
@@ -231,7 +241,7 @@ async function enviarMensagem() {
       console.warn(`⚠️ Ignorando imagem inválida: ${norm.motivo} | URL: ${original}`);
     }
     await bot.sendMessage(chatId, caption, { parse_mode: 'HTML', disable_web_page_preview: true });
-    console.log('✅ Mensagem (texto) enviada.');
+    console.log(`✅ Mensagem (texto) enviada (${origem}).`);
   }
 }
 
