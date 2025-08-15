@@ -5,6 +5,7 @@ require('dotenv').config();
 const token = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.CHAT_ID || process.env.CHAT_ID_LIVRO;
 const TEMPO_ENVIO = 5 * 60 * 1000; // 5 minutos
+const JSON_PATH = './mensagens.json';
 
 if (!token || !chatId) {
   console.error('❌ BOT_TOKEN/TELEGRAM_BOT_TOKEN ou CHAT_ID/CHAT_ID_LIVRO não definidos no .env');
@@ -13,66 +14,95 @@ if (!token || !chatId) {
 
 const bot = new TelegramBot(token, { polling: false });
 
-/* ------------ Load JSON (prioriza prioridade/prioritarios) ------------ */
-function carregarMensagens() {
+/* -------------------- JSON: carregar / normalizar / salvar -------------------- */
+function carregarEstrutura() {
   try {
-    const raw = fs.readFileSync('./mensagens.json', 'utf8');
+    const raw = fs.readFileSync(JSON_PATH, 'utf8');
     const json = JSON.parse(raw);
 
+    // Se for um array simples, trata como { geral: [...], prioridade: [] }
     if (Array.isArray(json)) {
-      return { prioridade: [], geral: json };
+      return { geral: json, prioridade: [], _alterado: false };
     }
 
-    const prioridade = [
-      ...(json.prioridade || []),
-      ...(json.prioritarios || []),
-    ];
-    const geral = json.geral || [];
+    const estrutura = {
+      geral: Array.isArray(json.geral) ? json.geral : [],
+      prioridade: Array.isArray(json.prioridade) ? json.prioridade : [],
+      _alterado: false
+    };
 
-    return { prioridade, geral };
-  } catch (erro) {
-    console.error('❌ Erro ao carregar mensagens:', erro.message);
-    return { prioridade: [], geral: [] };
+    // Se existir "prioritarios", junta em "prioridade" e limpa "prioritarios"
+    if (Array.isArray(json.prioritarios) && json.prioritarios.length > 0) {
+      estrutura.prioridade = [...estrutura.prioridade, ...json.prioritarios];
+      estrutura._alterado = true;
+    }
+
+    return estrutura;
+  } catch (err) {
+    console.error('❌ Erro ao carregar mensagens:', err.message);
+    return { geral: [], prioridade: [], _alterado: false };
   }
 }
 
-function sortearMensagem(listas) {
-  const { prioridade, geral } = listas;
-  const pool = prioridade.length ? prioridade : geral;
-  if (!pool.length) return null;
-  return pool[Math.floor(Math.random() * pool.length)];
+function salvarEstrutura(estrutura) {
+  try {
+    const toSave = {
+      geral: estrutura.geral,
+      prioridade: estrutura.prioridade
+      // intencionalmente não salvamos "prioritarios"
+    };
+    fs.writeFileSync(JSON_PATH, JSON.stringify(toSave, null, 2), 'utf8');
+  } catch (err) {
+    console.error('❌ Erro ao salvar mensagens.json:', err.message);
+  }
+}
+
+/* ------------------------- Sorteio e consumo ------------------------- */
+function sortearEConsumir(estrutura) {
+  // 1) Se existir prioritário, pega UM e remove do arquivo (consome)
+  if (estrutura.prioridade.length > 0) {
+    const idx = Math.floor(Math.random() * estrutura.prioridade.length);
+    const escolhido = estrutura.prioridade.splice(idx, 1)[0]; // remove!
+    salvarEstrutura(estrutura); // persiste remoção
+    console.log(`⭐ Prioritário enviado. Restam ${estrutura.prioridade.length} prioritários.`);
+    return escolhido;
+  }
+
+  // 2) Senão, sorteia da geral (não remove)
+  if (estrutura.geral.length > 0) {
+    return estrutura.geral[Math.floor(Math.random() * estrutura.geral.length)];
+  }
+
+  return null;
 }
 
 /* ---------------------- Util de strings/preços ----------------------- */
 const S = (v) => (v ?? '').toString().trim();
 
-/** Tenta extrair um número decimal da string (aceita , ou . como separador). */
+/** Extrai número de preço aceitando , ou . como separador decimal */
 function extrairNumeroPreco(str) {
   if (!str) return null;
   let s = String(str)
     .replace(/\s+/g, ' ')
-    .replace(/R\$\s*/gi, '')     // remove todos R$
-    .replace(/[^\d.,]/g, '');    // mantém só dígitos, ponto e vírgula
+    .replace(/R\$\s*/gi, '')      // remove R$
+    .replace(/[^\d.,]/g, '');     // mantém dígitos, ponto e vírgula
 
   if (!s) return null;
 
-  // Se tiver tanto . quanto , assume que . é milhar e , é decimal (pt-BR)
+  // . e , -> assume . milhar e , decimal
   if (s.includes('.') && s.includes(',')) {
     s = s.replace(/\./g, '').replace(',', '.'); // 1.234,56 -> 1234.56
   } else if (s.includes(',')) {
-    // Só vírgula -> decimal pt-BR
-    s = s.replace(',', '.');
+    s = s.replace(',', '.'); // 63,78 -> 63.78
   }
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
 
-/** É preço se consigo extrair número. */
 function ehPreco(str) {
   return extrairNumeroPreco(str) !== null;
 }
 
-/** Formata número em pt-BR com R$ */
 function fmtBR(n) {
   try {
     return `R$ ${n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -81,15 +111,10 @@ function fmtBR(n) {
   }
 }
 
-/** Normaliza rótulo: corrige "R$ R$ 388,00" -> "R$ 388,00" */
 function normalizarRotuloPreco(str) {
   if (!str) return '';
-  // Limpa duplicidades de R$ e espaços, mas preserva caso seja copy (sem número)
   const n = extrairNumeroPreco(str);
-  if (n === null) {
-    // Não é número -> provavelmente copy; devolve como veio (trim)
-    return S(str);
-  }
+  if (n === null) return S(str);  // não é número: é copy -> mantém
   return fmtBR(n);
 }
 
@@ -114,27 +139,17 @@ function montarLegenda(p) {
   const linhas = [];
   if (nome) linhas.push(`🏷️ <b>${nome}</b>`);
 
-  // Casos:
-  // 1) Ambos são preço -> risca o cheio, põe o com desconto
   if (temPreco && temDescPreco) {
     linhas.push(`\n<s>${preco}</s>`);
     linhas.push(`💸 Agora por: <b>${precoDesc}</b>`);
-  }
-  // 2) Cheio é preço e "desconto" é copy -> mostra o preço e a copy
-  else if (temPreco && precoDesc && !temDescPreco) {
+  } else if (temPreco && precoDesc && !temDescPreco) {
     linhas.push(`\n${preco}`);
     linhas.push(precoDesc);
-  }
-  // 3) Só preço cheio -> mostra só ele
-  else if (temPreco && !precoDesc) {
+  } else if (temPreco && !precoDesc) {
     linhas.push(`\n${preco}`);
-  }
-  // 4) Cheio não é preço, desconto é preço -> mostra só o desconto como preço
-  else if (!temPreco && temDescPreco) {
+  } else if (!temPreco && temDescPreco) {
     linhas.push(`\n💸 Agora por: <b>${precoDesc}</b>`);
-  }
-  // 5) Nenhum é preço -> se houver algum texto, mostra
-  else {
+  } else {
     if (preco) linhas.push(`\n${preco}`);
     if (precoDesc) linhas.push(preco ? precoDesc : `\n${precoDesc}`);
   }
@@ -170,16 +185,24 @@ function cortarLegenda(caption, limite = 1024) {
   return caption.length <= limite ? caption : caption.slice(0, limite - 1) + '…';
 }
 
+/* --------------------------- Envio principal -------------------------- */
 async function enviarMensagem() {
-  const listas = carregarMensagens();
-  const m = sortearMensagem(listas);
+  // Carrega e normaliza estrutura do JSON
+  const estrutura = carregarEstrutura();
+
+  // Se normalizou (ex.: merge de "prioritarios"), salva
+  if (estrutura._alterado) {
+    salvarEstrutura(estrutura);
+  }
+
+  // Sorteia e consome prioritário (se houver), senão usa geral
+  const m = sortearEConsumir(estrutura);
   if (!m) {
     console.warn('⚠️ Nenhum produto disponível.');
     return;
   }
 
   const caption = cortarLegenda(montarLegenda(m), 1024);
-
   const original = S(m.caminho) || S(m.imagem);
   const norm = normalizarUrlImagem(original);
 
