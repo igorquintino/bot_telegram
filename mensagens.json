@@ -2081,6 +2081,28 @@
       "mensagem": "👀 <b>Livro 'A Única Coisa' – Gary Keller</b>\n\n<s>R$ 49.99</s>\n💸 Agora por: <b>R$ 37.00</b>\n\n\n<a href=\"https://mercadolivre.com/sec/26FVdTZ\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
     }
   ],
-  "prioridade": [],
+  "prioridade": [
+     {
+      "nome": "Fechadura Digital Para Uso Interno e Externo FR 10 Preto Intelbras",
+      "preco": "R$263,99",
+      "preco_desconto": "R$ 223,00",
+      "frete_gratis": "",
+      "link": "https://amzn.to/3Jl0ikj",
+      "imagem": "./imagens/Livro 'A Única Coisa' – Gary Keller.jpg",
+      "caminho": "https://i.imgur.com/5lLQzU8.png",
+      "mensagem": "👀 <b>Livro 'A Única Coisa' – Gary Keller</b>\n\n<s>R$ 49.99</s>\n💸 Agora por: <b>R$ 37.00</b>\n\n\n<a href=\"https://mercadolivre.com/sec/26FVdTZ\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    },
+    {
+      "nome": "teste de cupom",
+      "preco": "15%",
+      "preco_desconto": "",
+      "frete_gratis": "",
+      "link": "CUPOM; TESTE",
+      "imagem": "./imagens/Livro 'A Única Coisa' – Gary Keller.jpg",
+      "caminho": "https://i.imgur.com/5lLQzU8.png",
+      "mensagem": "👀 <b>Livro 'A Única Coisa' – Gary Keller</b>\n\n<s>R$ 49.99</s>\n💸 Agora por: <b>R$ 37.00</b>\n\n\n<a href=\"https://mercadolivre.com/sec/26FVdTZ\">👉 Clique aqui para aproveitar</a>\n\nPromoção disponibilizada por Mulekedaspromos 🥶🏆"
+    }
+    
+  ],
   "prioritarios": []
 }
