@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const token = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.CHAT_ID || process.env.CHAT_ID_LIVRO;
-const TEMPO_ENVIO = 1 * 60 * 1000; // 5 minutos
+const TEMPO_ENVIO = 12 * 60 * 1000; // 5 minutos
 const JSON_PATH = './mensagens.json';
 
 if (!token || !chatId) {
